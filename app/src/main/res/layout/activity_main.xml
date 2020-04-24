@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/idTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GESTIONAR IMAGEN"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+    <ImageView
+        android:id="@+id/idImagen"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/img_base"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/idTitulo"
+        android:layout_marginTop="60dp"/>
+    <Button
+        android:id="@+id/btnCargarImg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#49021A"
+        android:textColor="#FFFFFF"
+        android:text="SELECCIONAR IMAGEN"
+        android:onClick="onClick"/>
+
+</RelativeLayout>
