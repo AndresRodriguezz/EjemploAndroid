@@ -33,14 +33,14 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
-    private final String CARPETA_RAIZ="misImagenesPrueba/";
-    private final String RUTA_IMAGEN=CARPETA_RAIZ+"misFotos";
+    private final String CARPETA_RAIZ="misImagenesPrueba/";//Directorio principal
+    private final String RUTA_IMAGEN=CARPETA_RAIZ+"misFotos";//Carpeta donde se guarda las fotos
     final int COD_SELECCIONAR=10;
     final int COD_FOTO=20;
 
     ImageView imagenFoto;
     Button btnCargarfoto;
-    String path;
+    String path; //almacena la ruta de la imagen
 
 
     @Override
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M){
             return true;
         }
+        //Checamos que los permisos esten vigentes, tanto de camara como de almacenamiento
         if ((checkSelfPermission(CAMERA)== PackageManager.PERMISSION_GRANTED) &&
                 (checkSelfPermission(WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)){
             return true;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             cargarDialogoRecomendacion();
 
         }else{
+            // en caso de que sea una version menor a la de MarshMellow
             requestPermissions( new String[]{WRITE_EXTERNAL_STORAGE,CAMERA},100);
         }
         return  false;
@@ -94,16 +96,21 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
+    // En caso de no dar los permisos de primera instancia se pondra un alert para que lo haga de forma manual el usuario
     private void solicitarPermisosManual() {
-        final CharSequence[] opciones = {"Si","No"};
+        final CharSequence[] opciones = {"Si","No"}; //cargamos las opciones
+        //Se crea el cuadro de dialogo en el mismo Activity y tambien se crea el objeto alertaOpciones
         final AlertDialog.Builder alertaOpciones = new AlertDialog.Builder(MainActivity.this);
+        //Titulo del mensaje del cuadro de dialogo
         alertaOpciones.setTitle("Desea configurar los permisos de manera manual?");
+        //Se carga el onClick listener a las opciones de nuestro alertDialog
         alertaOpciones.setItems(opciones, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //Wich es el dato que recibimos como parametro
                 if(opciones[which].equals("Si")){
                     Intent intent = new Intent();
+                    //Asignamos a nuestro objeto la accion
                     intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package",getPackageName(),null);
                     intent.setData(uri);
@@ -117,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //Se enseña alerDialog
         alertaOpciones.show();
     }
 
@@ -168,8 +176,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tomarFotografia() {
+        // Se crea el objeto fileImagen de tipo File
         File fileImagen=new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
+        //.exists(); genera un booleano true or false, dependera si la variable contiene informacion sera true
         boolean isCreada=fileImagen.exists();
+        //Se inicializa nuestra variable nombre vacia
         String nombreImagen="";
         if(isCreada==false){
             isCreada=fileImagen.mkdirs();
@@ -188,15 +199,19 @@ public class MainActivity extends AppCompatActivity {
         Intent intent=null;
         intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         ////
+        //SE comprueba la version de android
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
         {
+            //Si es version superior a Nugat para guardar imagen son estas lineas
             String authorities=getApplicationContext().getPackageName()+".provider";
             Uri imageUri=FileProvider.getUriForFile(this,authorities,imagen);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         }else
         {
+            //En caso de que la version sea anterior a la Nugat
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagen));
         }
+        //Se cargar el activityResult con el intent y el requestCode
         startActivityForResult(intent,COD_FOTO);
 
         ////
@@ -213,15 +228,18 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case COD_FOTO:
+                    //Cuando el caso es foto o codigo, es el cod 20
                     MediaScannerConnection.scanFile(this, new String[]{path}, null,
                             new MediaScannerConnection.OnScanCompletedListener() {
+                        //Se hace y asigana la ruta de almacenamiento
                                 @Override
                                 public void onScanCompleted(String path, Uri uri) {
                                     Log.i("Ruta de almacenamiento","Path: "+path);
                                 }
                             });
-
+//Se instancia el objeto Bitmap con la direccion que es path
                     Bitmap bitmap= BitmapFactory.decodeFile(path);
+                    // Se asigna la imagen bitmap a nuestro ImageView imagenFoto
                     imagenFoto.setImageBitmap(bitmap);
 
                     break;
