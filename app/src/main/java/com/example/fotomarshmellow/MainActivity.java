@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA},100);
             }
         });
-        dialogo.show();
+        dialogo.show(); //muestra el activityResult con las especificaciones previas
 
     }
 
